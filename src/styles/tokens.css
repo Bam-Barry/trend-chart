@@ -1,0 +1,612 @@
+/**
+ * Noura design tokens — SCAFFOLD_PROMPT §4. Non-negotiable.
+ *
+ * Every component stylesheet reads from these. Never redefine a token value
+ * inside a component stylesheet: change it here and it propagates everywhere.
+ *
+ * Keep in sync with `tokens.ts` by hand — JS consumers need the same values
+ * for inline SVG fills and chart geometry.
+ */
+
+:root {
+  /* Colors — black / white platform */
+  --color-text: #171717; /* primary text */
+  --color-text-muted: #5c5c5c; /* body text */
+  --color-text-soft: #a3a3a3; /* secondary */
+  --color-text-faint: #b3b3b3; /* captions, labels */
+  --color-border: #ebebeb; /* standard 0.5px border */
+  --color-border-light: #f2f2f2; /* section dividers */
+  --color-border-lighter: #f2f2f2; /* summary bar dividers */
+  /* Two jobs, deliberately separated. --color-bg-subtle is a *surface*: the
+     sidebar's ground, a proof panel, an icon tile — things that are quietly off
+     white while at rest. --color-bg-hover is a *state*, and has to be a step
+     darker than that or a hovered row on the sidebar would come out lighter than
+     the sidebar itself. */
+  --color-bg-subtle: #fcfcfc; /* resting surfaces */
+  --color-bg-hover: #f7f7f7; /* hover + selected states, everywhere */
+  --color-bg-page: #ffffff;
+  --color-accent: #335cff; /* SINGLE accent
+                              NEVER in Automation Center
+                              NEVER for paid/AI moments */
+  --color-danger: #e93544; /* reserved for critical only */
+  /* Semantic pair, not accents. §4 originally banned green outright; it's here
+     because a KPI delta has to say whether a number moved the right way, and
+     an arrow alone can't — "down" is good for waste and bad for revenue.
+     Chosen to sit at the same weight as --color-danger so a rise and a fall
+     read as equals rather than one shouting. */
+  --color-success: #17b26a;
+  /* The middle of the same triad. Added for the health gauge's fair band, where
+     ink read as "no verdict" when the scale actually wanted "not good yet".
+
+     Chosen by lightness, not by eye: at L* 33.2 and 2.75:1 on white it sits
+     within a tenth of --color-success (33.1 / 2.76), so red, amber and green
+     carry the same weight and none of the three shouts over the others. */
+  --color-warning: #e08700;
+
+  /* Shell geometry. The brand block matches the topbar height exactly, so the
+     rule under it and the topbar's bottom border read as one line. */
+  --sidebar-width: 256px;
+  --sidebar-width-collapsed: 60px;
+  --topbar-height: 56px;
+
+  /* Control heights — shared by Button, Input, Select, and every other control
+     that has to line up on a toolbar row. */
+  --height-control-sm: 28px;
+  --height-control-md: 32px;
+  --height-control-lg: 40px;
+
+  /* Sequential ramp — magnitude, for heatmaps and anything shaded by how much.
+     One hue, light to dark, five steps.
+
+     Not picked by eye. Run through the dataviz validator, which checks four
+     things: lightness is monotone, adjacent steps differ by at least 0.06 L,
+     the lightest step still clears 2:1 against the page, and the hue holds
+     across the ramp. Three earlier attempts failed it — accent alone doesn't
+     span enough lightness for five distinguishable steps, which is why the top
+     two mix toward ink rather than deepening the accent further.
+
+     Re-run the validator on any change here: a ramp whose pale end dissolves
+     into the page reports "a little" and "none" as the same thing.
+
+     Stays blue rather than going green like GitHub's contribution graph, and
+     both reasons were measured. Green is intrinsically luminous, so its palest
+     usable step tops out at 1.82:1 on the page against this ramp's 2.13:1 —
+     GitHub's own #9be9a8 is 1.44:1, which is the flaw, not the target. And
+     every mid-green lands on the success token: the best candidate's second
+     step was ΔE 3.6 from --color-success, close enough to be the same colour
+     on a screen that also carries green delta triangles. */
+  --seq-1: #99aeff; /* 2.08:1 on page — the floor, deliberately */
+  --seq-2: #6886ff;
+  --seq-3: #335cff; /* --color-accent, the ramp's middle */
+  --seq-4: #2b47b9;
+  --seq-5: #23357d;
+
+  /* Categorical palette — identity, for slices that must be told apart.
+
+     Four hues that actually differ. An earlier set leaned on blue, cyan and
+     lilac, which passed every check and still read as three shades of one
+     colour — separable is not the same as distinguishable, and the validator
+     only measures the first.
+
+     Picking them is constrained from both sides. Red, green and amber belong
+     to status, so the warm end is mostly spoken for; --cat-3 is a bronze
+     rather than an orange because every orange worth having sits within
+     ΔE 6 of --color-warning (#e08700), close enough that a slice would read
+     as a verdict. This bronze clears warning by 19.2, danger by 19.1 and
+     success by 24.3, so no slice can be mistaken for a status.
+
+     Worst adjacent pair: ΔE 14.8 deutan, 20.2 normal, 8.3 tritan. The ring
+     wraps, so --cat-4 sits against --cat-1 too; that pair was measured
+     separately (13.4 protan) rather than assumed.
+
+     Deliberately no blue — the accent already carries every bar, gauge and
+     link in the product, and a blue slice competes with all of it. Don't use
+     these as text or icon colours, and don't add a fifth by eye. */
+  --cat-1: #7a4de0; /* violet */
+  --cat-2: #00a39b; /* teal */
+  --cat-3: #8f5b00; /* bronze — not amber, see above */
+  --cat-4: #b8478f; /* magenta */
+
+  /* The fifth slice, and it is deliberately not a hue. A fifth *hue* was
+     measured and doesn't exist in the space left: the best candidate
+     (#4a6cd4) came out ΔE 2.1 deutan against --cat-1 where the ring wraps,
+     and ΔE 8.1 against --color-accent, which carries every bar on the same
+     screen. So the smallest slice takes a neutral instead — 3.24:1 on the
+     page, unmistakable against four saturated hues because it differs in
+     chroma rather than in hue, which is the one axis colour blindness leaves
+     alone. Use it for the smallest slice or an "other" bucket, never for a
+     category you want read. */
+  --cat-muted: #8c8f94;
+
+  /* Scrollbar thumb. Mixed from ink rather than reusing --color-border, which
+     is tuned to be nearly invisible against the page — right for a hairline,
+     wrong for something you have to aim at. Track stays transparent so the
+     surface underneath carries it. */
+  /* ---------- Chart kit (bklit, via shadcn registry) ----------
+     The variables the vendored chart kit reads, set from our tokens so it
+     draws in the system's ink, greys and hairlines. */
+  --foreground: var(--color-text);
+  --muted-foreground: var(--color-text-soft);
+  --chart-background: var(--color-bg-page);
+  --chart-foreground: var(--color-text);
+  --chart-foreground-muted: var(--color-text-soft);
+  --chart-label: var(--color-text-faint);
+  --chart-grid: var(--color-border);
+  --chart-crosshair: var(--color-text-soft);
+  /* Two hues, not ink and grey: accent for this period, the categorical teal
+     for the one before — so the lines read as two series at a glance. */
+  --chart-line-primary: var(--color-accent);
+  --chart-line-secondary: var(--cat-2);
+  --chart-1: var(--color-text);
+  --chart-2: var(--color-text-soft);
+  --chart-3: var(--color-accent);
+  --chart-4: var(--color-success);
+  --chart-5: var(--color-warning);
+  /* An ink tooltip, like the date pill beneath it. */
+  --chart-tooltip-background: var(--color-text);
+  --chart-tooltip-foreground: var(--color-bg-page);
+  --chart-tooltip-muted: color-mix(in srgb, var(--color-bg-page) 60%, transparent);
+  --chart-indicator-color: var(--color-text-soft);
+  --chart-indicator-secondary-color: var(--color-border);
+  --chart-marker-background: var(--color-bg-page);
+  --chart-marker-foreground: var(--color-text);
+  --chart-marker-border: var(--color-border);
+  --chart-marker-badge-background: var(--color-text);
+  --chart-marker-badge-foreground: var(--color-bg-page);
+  --chart-segment-background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  --chart-segment-line: var(--color-border);
+  --chart-brush-border: var(--color-border);
+
+  --scrollbar-thumb: color-mix(in srgb, var(--color-text) 18%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--color-text) 30%, transparent);
+
+  /* Segmented control. The track is a recess and the active segment a chip
+     resting in it, so the track fill has to be darker than the chip — that
+     contrast is the entire read, and it inverts the usual light-on-light
+     relationship the rest of the system uses. */
+  --segment-track-bg: color-mix(in srgb, var(--color-text) 4%, var(--color-bg-page));
+  --height-segment-sm: 32px;
+  --height-segment-md: 36px;
+
+  /* The chip's own lift. Tighter and a shade stronger than L1: it's throwing
+     onto the track's fill from a couple of millimetres up, not onto the page
+     from a card's height, so the drop wants to stay close and read crisp
+     rather than spread. */
+  --segment-chip-shadow: var(--edge-ring),
+    0 1px 2px 0 color-mix(in srgb, var(--color-text) 8%, transparent),
+    0 3px 6px -2px color-mix(in srgb, var(--color-text) 10%, transparent);
+
+  /* Underline tabs. The indicator has to out-weigh the baseline rule it sits
+     on, or the active tab reads as a gap in the line rather than a mark on it —
+     hence 2px against the hairline. */
+  --subtab-indicator-h: 2px;
+  --subtab-gap: 28px;
+
+  /* Keycap. White face, black at 12% doing all three shadows: a soft inset
+     along the top edge, a short drop beneath, and the hairline that gives the
+     cap an edge against a page the same colour as it.
+
+     Pure black rather than tinted toward --color-text like the elevation
+     ladder. On a white face the difference is imperceptible, and one flat value
+     across all three keeps the cap reading as a single moulded object. */
+  --kbd-bg: var(--color-bg-page);
+  --kbd-fg: var(--color-text-soft);
+  --kbd-shadow-color: rgba(0, 0, 0, 0.12);
+  --kbd-shadow:
+    inset 0 -2px 2px 0px var(--kbd-shadow-color),
+    0 1px 2px var(--kbd-shadow-color),
+    0 0 0 var(--edge-hairline-w) var(--kbd-shadow-color);
+
+  /* Sheen on filled dark surfaces (primary button).
+     Spec: a white 64%→0% top-to-bottom gradient inside a layer at 24% opacity.
+     Pre-multiplied here — 0.64 × 0.24 = 0.1536 — so it can ride as a single
+     background layer instead of a pseudo-element. Visually identical, because
+     the gradient's far stop is already 0, and it lets hover/disabled states
+     compose without z-index juggling. */
+  --sheen-overlay: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.1536) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  --sheen-inset: inset 0 2px 2px 0 rgba(255, 255, 255, 0.14);
+
+  /* ---------- Motion — the transitions.dev scale ----------
+     §2 called the design "intentionally still"; these exist so the exceptions
+     are consistent rather than invented per component.
+
+     Two names collided with what this file had before, and both were resolved
+     toward the scale rather than around it:
+
+     --duration-fast was 180ms and is now 250ms. Everything that used it for a
+     hover moved to --duration-quick; only genuine icon-swap motion kept it.
+
+     --ease-out was cubic-bezier(0.16, 1, 0.3, 1), which is this scale's
+     --ease-smooth-out, not its --ease-out. Every previous use was surface
+     motion, so all of them moved to --ease-smooth-out and --ease-out now means
+     what the scale says: the tooltip curve. */
+
+  /* Durations */
+  --duration-stagger: 40ms; /* per-item stagger offset */
+  --duration-micro: 80ms; /* intent delay, path delay, shake segment */
+  --duration-quick: 150ms; /* modal/dropdown close, text swap, tooltip appear */
+  --duration-fast: 250ms; /* icon swap, dropdown/modal open, tabs sliding */
+  --duration-medium: 350ms; /* panel close, toast close */
+  --duration-slow: 400ms; /* panel open, skeleton reveal, input clear */
+  --duration-very-slow: 500ms; /* emphasis, badge appear, success check */
+
+  /* Kept off-scale on purpose: a checkbox filling and a card lifting have no
+     usage in the scale, and the doctrine is to leave those alone rather than
+     force them to the nearest number. */
+  --duration-base: 240ms;
+
+  /* Easings */
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1); /* open/close, slide, resize */
+  --ease-in-out: ease-in-out; /* icon swap, text swap, text reveal */
+  --ease-out: ease-out; /* tooltip open / close */
+  --ease-linear: linear; /* shimmer, skeleton pulse, spinner */
+  --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1); /* badge pop open */
+  --ease-bounce-strong: cubic-bezier(0.34, 3.85, 0.64, 1); /* bouncy hover-out */
+
+  /* Chevron flip. Outside the transitions.dev six on purpose: its second
+     control point sits behind its first on the time axis, which holds the
+     rotation for a beat and then snaps it through. None of the scale's easings
+     does that, and ease-in-out reads sluggish on a 180° turn. */
+  --ease-flip: cubic-bezier(0.25, 0, 0.06, 1);
+
+  /* Distances — travel scales down with frequency, up with ceremony. */
+  --distance-micro: 4px;
+  --distance-small: 6px;
+  --distance-base: 8px;
+  --distance-medium: 12px;
+  --distance-large: 30px;
+
+  /* Scales — the "pre" scale a surface animates from, always settling to 1. */
+  --scale-large: 0.96; /* modal */
+  --scale-medium: 0.97; /* dropdown open */
+  --scale-small: 0.98; /* tooltip */
+  --scale-tiny: 0.99; /* dropdown close */
+
+  /* Blur — the "pre" blur, settling to 0. Softens a swap or slide, never a
+     plain fade. */
+  --blur-small: 2px;
+  --blur-medium: 3px;
+  --blur-large: 8px;
+
+  /* Toggle. Hover shades are mixed from the palette rather than authored as new
+     hex values, so --color-accent stays the single source for the accent. */
+  --toggle-track-off: var(--color-border);
+  --toggle-track-off-hover: color-mix(in srgb, var(--color-border) 88%, var(--color-text));
+  --toggle-track-on: var(--color-accent);
+  --toggle-track-on-hover: color-mix(in srgb, var(--color-accent) 88%, var(--color-text));
+  --toggle-ring-off: color-mix(in srgb, var(--color-border) 70%, var(--color-text));
+  --toggle-ring-on: color-mix(in srgb, var(--color-accent) 78%, var(--color-text));
+  --toggle-thumb: var(--color-bg-page);
+  --toggle-thumb-shadow:
+    0 0 0 0.5px color-mix(in srgb, var(--color-text) 14%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-text) 20%, transparent);
+
+  /* ---------- Elevation ladder — see docs/edge-lab-v6 ----------
+     Every level is three parts: a hairline ring, a tight contact shadow, and a
+     diffuse ambient one. The geometry is generated, not hand-picked:
+
+       offset = 4 × 1.65^(n−1)  →  4, 7, 11, 18, 30
+       blur   = offset × 1.75
+       spread = −blur ÷ 2.2
+       ambient α = 5% × (1 + 0.55·(n−1)/4)
+
+     L1 rests on the surface · L2 is paper on a desk · L3 floats above its
+     trigger · L4 is a panel over the page · L5 is the highest thing in the room.
+
+     Hover lifts half a level — a hovered card borrows L2.5's depth and doubles
+     the ring. That's why --elevation-2-hover exists rather than a hand-tuned
+     second shadow.
+
+     Shadows tint toward --color-text rather than pure black, so re-inking the
+     palette re-tints the depth with it. */
+
+  /* Hairline width and ink. 0.5px at 24% lays down the same ink as 1px at 12%,
+     so the two are perceptually equal — see the fine/safe upgrade below. */
+  --edge-hairline-w: 1px;
+  --edge-hairline-pct: 12%;
+  --edge-hairline-pct-strong: 24%;
+  /* Cards. 60% of the standard ring — at 12% a card's edge read as a grey
+     outline on white; this keeps the edge without drawing a box. */
+  --edge-hairline-pct-soft: 7.2%;
+
+  --edge-ring: 0 0 0 var(--edge-hairline-w)
+    color-mix(in srgb, var(--color-text) var(--edge-hairline-pct), transparent);
+  --edge-ring-strong: 0 0 0 var(--edge-hairline-w)
+    color-mix(in srgb, var(--color-text) var(--edge-hairline-pct-strong), transparent);
+  --edge-ring-soft: 0 0 0 var(--edge-hairline-w)
+    color-mix(in srgb, var(--color-text) var(--edge-hairline-pct-soft), transparent);
+
+  --elevation-1: var(--edge-ring),
+    0 2px 2px -1px color-mix(in srgb, var(--color-text) 6%, transparent),
+    0 4px 7px -3px color-mix(in srgb, var(--color-text) 5%, transparent);
+
+  --elevation-2: var(--edge-ring),
+    0 3px 3px -1px color-mix(in srgb, var(--color-text) 7%, transparent),
+    0 7px 12px -5px color-mix(in srgb, var(--color-text) 6%, transparent);
+
+  /* L2 as cards draw it: --elevation-2's depth on the soft ring. Popovers,
+     menus and modals keep the standard ring — they float over content and
+     need the firmer edge. */
+  --elevation-card: var(--edge-ring-soft),
+    0 3px 3px -1px color-mix(in srgb, var(--color-text) 7%, transparent),
+    0 7px 12px -5px color-mix(in srgb, var(--color-text) 6%, transparent);
+
+  /* L2.5 — the hovered card. Ring doubles, depth lifts half a rung. */
+  --elevation-2-hover: var(--edge-ring-strong),
+    0 3px 3px -1px color-mix(in srgb, var(--color-text) 7%, transparent),
+    0 8px 14px -6px color-mix(in srgb, var(--color-text) 6%, transparent);
+
+  --elevation-3: var(--edge-ring),
+    0 3px 3px -1px color-mix(in srgb, var(--color-text) 7%, transparent),
+    0 11px 19px -9px color-mix(in srgb, var(--color-text) 6%, transparent);
+
+  --elevation-4: var(--edge-ring),
+    0 4px 4px -1px color-mix(in srgb, var(--color-text) 7%, transparent),
+    0 18px 32px -15px color-mix(in srgb, var(--color-text) 7%, transparent);
+
+  --elevation-5: var(--edge-ring),
+    0 4px 4px -1px color-mix(in srgb, var(--color-text) 8%, transparent),
+    0 30px 53px -24px color-mix(in srgb, var(--color-text) 8%, transparent);
+
+  /* Scrim. The Edge Lab is explicit that at L5 "the scrim carries half the
+     depth story" — a modal's shadow alone can't say it's the only live thing on
+     screen, so the page has to visibly recede. 44% is the lab's value. */
+  --scrim: color-mix(in srgb, var(--color-text) 44%, transparent);
+
+  /* Inverse rim, for dark surfaces sitting on the light page.
+     The Edge Lab warns that a dark ring on a dark surface "reads as a seam, not
+     a lit rim" — a dark object wants a light edge. So this is inset and white
+     where --edge-ring is outset and ink. */
+  --edge-ring-inverse: inset 0 0 0 var(--edge-hairline-w)
+    color-mix(in srgb, var(--color-bg-page) var(--edge-hairline-pct), transparent);
+
+  /* Tooltip — L3 depth, inverse rim.
+     The two halves come from different modes on purpose: the shadow lands on a
+     white page so it takes the light-mode alphas, while the rim sits on #171717
+     so it takes the dark-mode treatment. Using dark-mode alphas (2.8× heavier)
+     for the cast shadow would blacken the page under every tooltip. */
+  --elevation-tooltip: var(--edge-ring-inverse),
+    0 3px 3px -1px color-mix(in srgb, var(--color-text) 7%, transparent),
+    0 11px 19px -9px color-mix(in srgb, var(--color-text) 6%, transparent);
+
+  /* ---------- Selection controls (Checkbox, Radio) ----------
+     One unchecked chrome for both, so a checkbox and a radio in the same form
+     read as the same family. Borders are mixed from --color-text rather than
+     authored, so re-inking the palette carries them along.
+
+     Two tones ship: `accent` for a decision the page wants you to notice, `ink`
+     for dense lists and for the Automation Center, where §4 bans accent
+     outright. Same geometry either way — only the fill changes. */
+  --select-border: color-mix(in srgb, var(--color-text) 22%, transparent);
+  --select-border-hover: color-mix(in srgb, var(--color-text) 38%, transparent);
+  --select-mark: var(--color-bg-page);
+
+  --select-fill-accent: var(--color-accent);
+  --select-fill-ink: var(--color-text);
+
+  /* Control sizes. The mark and dot scale with these — see the GEOMETRY maps in
+     Checkbox.tsx and Radio.tsx, which stay the source of truth for both. */
+  --select-box-sm: 16px;
+  --select-box-md: 20px;
+  /* The guide's 2px came from a dark theme where the unchecked box has to fight
+     the ground. On white it read heavy next to the 0.5px hairlines everywhere
+     else, so it steps down to sit closer to the system's edge language while
+     staying present enough to be an affordance. */
+  --select-border-w-sm: 1px;
+  --select-border-w-md: 1.5px;
+
+  /* Count badge. One treatment wherever a number rides alongside a label —
+     tabs, segments, chips, the filter trigger. Tinted rather than bordered: at
+     this size a border is most of the shape, and a row of them reads as a
+     second set of controls. */
+  --count-bg: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --count-fg: var(--color-text-muted);
+  /* On a filled dark chip the tint has to invert or the number disappears. */
+  --count-bg-inverse: color-mix(in srgb, var(--color-bg-page) 20%, transparent);
+  --count-fg-inverse: var(--color-bg-page);
+
+  /* Badge tones. Soft fills are mixed from the semantic colour rather than
+     authored, so a badge can never drift from the danger red or success green
+     it's supposed to be echoing. 12% is the lowest tint that still reads as
+     coloured next to text at this size. */
+  --badge-neutral-bg: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --badge-neutral-fg: var(--color-text-muted);
+  --badge-accent-bg: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  --badge-success-bg: color-mix(in srgb, var(--color-success) 12%, transparent);
+  --badge-danger-bg: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  /* Same 12% weight as its siblings. --color-warning was chosen to sit at the
+     same lightness as success and danger, so the three soft fills come out at
+     matching strength without needing per-tone tuning. */
+  --badge-warning-bg: color-mix(in srgb, var(--color-warning) 12%, transparent);
+
+  /* Avatar. One neutral fill rather than a hue derived from the name — §4 keeps
+     the palette monochrome, and generated colours would smuggle a second one in
+     through the back door. */
+  --avatar-bg: var(--color-text);
+  --avatar-fg: var(--color-bg-page);
+
+  /* Focus ring — one definition for every focusable control, so keyboard users
+     get an identical affordance across the whole design system. */
+  --focus-ring: 2px solid var(--color-text);
+  --focus-ring-offset: 2px;
+
+  /* Field focus — Edge Lab L1 input states (docs/edge-lab-v6). Text fields sit
+     on box-shadow, so focus composes into the same stack rather than adding an
+     offset outline that reads as a button.
+
+     Focus · pointer: hairline + 3px soft halo (8% ink) + L1 depth.
+     Focus · keyboard: 2px solid replaces the hairline; depth bumps so the ring
+     still has lift under it. Ink (not accent) — mono platform, same as --focus-ring.
+     Invalid: lab exports 2px on the brand/neg pair; at our control size that
+     reads heavy next to the resting 1px edge, so error stays one hairline of
+     danger plus the same depth boost. */
+  --field-depth:
+    0 2px 2px -1px color-mix(in srgb, var(--color-text) 6%, transparent),
+    0 4px 7px -3px color-mix(in srgb, var(--color-text) 5%, transparent);
+  --field-depth-boost:
+    0 4px 6px -2px color-mix(in srgb, var(--color-text) 20%, transparent),
+    0 4px 7px -3px color-mix(in srgb, var(--color-text) 5%, transparent);
+
+  --field-focus: var(--edge-ring),
+    0 0 0 3px color-mix(in srgb, var(--color-text) 8%, transparent),
+    var(--field-depth);
+  --field-focus-key: 0 0 0 2px var(--color-text), var(--field-depth-boost);
+  --field-invalid: 0 0 0 var(--edge-hairline-w) var(--color-danger),
+    var(--field-depth-boost);
+
+  /* Radii */
+  /* Fully round, for dots, swatches and anything genuinely pill-shaped. Any
+     value past half the element's smaller side gives a circle, so one token
+     covers an 8px dot and a 24px chip without either needing its own.
+
+     Added after four legend swatches shipped square: they read
+     `var(--radius-pill)` against a token that didn't exist, and an undefined
+     custom property makes the whole declaration invalid rather than falling
+     back to something. It fails silently and looks like a design choice. */
+  --radius-pill: 999px;
+  --radius-sm: 4px; /* small controls — not pills, despite the old comment */
+  --radius-md: 6px; /* small buttons */
+  --radius-lg: 8px; /* standard buttons */
+  --radius-xl: 10px; /* proof panels */
+  --radius-2xl: 12px; /* cards */
+  --radius-3xl: 14px; /* hero container */
+
+  /* Type scale (Profound-forward hierarchy).
+     Weights below are the TWK Lausanne equivalents of §4's original 700/600,
+     which the family doesn't ship — 650 is the top weight, 550 the semibold. */
+  --size-h1: 32px; /* weight 650, tracking -0.025em */
+  --size-h2: 22px; /* weight 650, tracking -0.02em */
+  --size-h3: 20px; /* weight 650, tracking -0.015em */
+  --size-card-title: 18px;
+  --size-card-title-sm: 16px;
+  --size-body: 14px;
+  --size-body-sm: 12.5px;
+  --size-caption: 11.5px;
+  --size-eyebrow: 10.5px; /* weight 550, tracking 0.09em */
+
+  /* Metric figures. 20px sits between h3 and h2 and isn't on the ladder above,
+     so like the table these are scoped rather than bending the global scale.
+     At --line-height-tight the md step lands on exactly 24px. */
+  --size-metric-sm: 16px;
+  --size-metric-md: 20px;
+  --size-metric-lg: 28px;
+
+  /* Weights. TWK Lausanne's ladder doesn't map onto the usual 400/500/600/700,
+     so these name the steps the product actually uses. Body sits at 300 —
+     lighter than a conventional regular, which is what gives the family its
+     air at 13–14px. */
+  --weight-base: 300;
+  --weight-normal: 350;
+  --weight-semibold: 400;
+  --weight-medium: 500;
+  --weight-strong: 550;
+  --weight-heading: 650;
+
+  /* Line heights. `tight` is for anything set on one line inside a fixed box —
+     controls, caps, labels — where 1.5 would push the text off centre. `base`
+     is running copy. */
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* Fonts. TWK Lausanne is the system typeface — one family, everywhere.
+     Shipped weights: 50 100 150 200 250 300 350 400 500 550 650.
+     There is no 600 and no 700; asking for either lands on 650, which silently
+     flattens the distinction between a heading and an eyebrow. Set weights from
+     the list above.
+
+     --font-mono has no font behind it: JetBrains Mono was never installed, so it
+     resolved to the OS monospace and put a foreign face on the page. It stays
+     defined only for genuine code/terminal contexts and is currently unused —
+     see the note in the terminal-table work when that lands. */
+  --font-sans: 'TWK Lausanne', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Table. Its own type metrics rather than the global scale: 12px and 14px sit
+     between the existing steps, and bending --size-body to fit would move text
+     on every other screen. Scoped here, the table owns its density and nothing
+     else shifts.
+
+     Note the inversion — the header is SMALLER than the body. Headers are
+     labels you read once; cells are data you read every time. */
+  --size-table-header: 12px;
+  --line-height-table-header: 14px;
+  --size-table-cell: 14px;
+
+  --height-table-header: 30px;
+  --height-table-row: 56px;
+  --height-table-row-compact: 40px;
+
+  /* A shade darker than --color-bg-subtle (#fcfcfc), so the header reads as its
+     own bar rather than as a hover state. With a fill this definite the header
+     needs no bottom rule — the tone change is the separation. */
+  --table-header-bg: #fafafa;
+  --table-header-radius: var(--radius-md);
+
+  /* Tooltip. A dark chip on the light page — the one inverted surface in the
+     system so far. Solid rather than the source guide's translucent glass,
+     because #171717 at full opacity keeps 11px text legible over any content
+     it happens to cover. */
+  --tooltip-bg: var(--color-text);
+  --tooltip-fg: var(--color-bg-page);
+  --tooltip-border: color-mix(in srgb, var(--color-bg-page) 12%, transparent);
+
+  /* Stacking order. One scale so overlays never fight with magic numbers.
+     Tooltip sits top: it can be summoned from inside a modal, but nothing is
+     ever summoned from inside a tooltip. */
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-sheet: 1200;
+  --z-modal: 1300;
+  --z-toast: 1400;
+  --z-tooltip: 1500;
+
+  /* Breakpoints */
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+  --bp-wide: 1280px;
+}
+
+/**
+ * Adaptive hairline precision — the Edge Lab's fine/safe tiers, expressed in CSS
+ * rather than sniffed in JS.
+ *
+ * A half-pixel ring is crisper, but only where it can actually be drawn: a
+ * sub-2dppx display has no half pixel to light, and WebKit grid-snaps the
+ * geometry so it renders as a full pixel at half the opacity — visibly too faint.
+ *
+ * So: earn the upgrade on density, then let WebKit veto it. Because 0.5px at 24%
+ * is the same ink as 1px at 12%, the fallback isn't a downgrade — it's the same
+ * edge drawn the way that engine can draw it.
+ */
+@media (min-resolution: 2dppx) {
+  :root {
+    --edge-hairline-w: 0.5px;
+    --edge-hairline-pct: 24%;
+    --edge-hairline-pct-strong: 48%;
+    --edge-hairline-pct-soft: 14.4%;
+  }
+}
+
+/* WebKit veto. `-webkit-hyphens` is Safari-only, so this re-pins integer
+   geometry there. Must follow the density query to win the cascade. */
+@supports (-webkit-hyphens: none) {
+  :root {
+    --edge-hairline-w: 1px;
+    --edge-hairline-pct: 12%;
+    --edge-hairline-pct-strong: 24%;
+    --edge-hairline-pct-soft: 7.2%;
+  }
+}

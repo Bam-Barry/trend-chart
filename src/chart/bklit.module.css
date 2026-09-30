@@ -1,0 +1,240 @@
+/*
+ * The bklit chart kit's styles, converted from its Tailwind classes to a CSS
+ * Module (installed from the shadcn registry, @bklit/line-chart). One class per
+ * original class string; values are the Tailwind ones, set in our tokens where
+ * a token matches. Colours come from the --chart-* variables in tokens.css.
+ */
+
+/* line-chart.tsx — "relative w-full" */
+.root {
+  position: relative;
+  width: 100%;
+}
+
+/* "absolute" */
+.abs {
+  position: absolute;
+}
+
+/* "pointer-events-none absolute inset-0" */
+.overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+/* "pointer-events-none absolute z-50" */
+.floating {
+  pointer-events: none;
+  position: absolute;
+  z-index: 50;
+}
+
+/* y-axis — "absolute top-0 bottom-0" */
+.yAxisColumn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+/* y-axis — "absolute flex items-center" */
+.yAxisTick {
+  position: absolute;
+  display: flex;
+  align-items: center;
+}
+
+/* x-axis / y-axis — "whitespace-nowrap text-chart-label text-xs" */
+.axisLabel {
+  white-space: nowrap;
+  color: var(--chart-label);
+  font-size: var(--size-caption);
+  line-height: 1rem;
+}
+
+/* ---------- Tooltip ---------- */
+
+/* "min-w-[140px] overflow-hidden rounded-lg text-chart-tooltip-foreground shadow-lg" */
+.panel {
+  min-width: 140px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  color: var(--chart-tooltip-foreground);
+  box-shadow: var(--elevation-3);
+}
+
+.panelBg {
+  background: var(--chart-tooltip-background);
+}
+
+.panelBlur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.clip {
+  overflow: hidden;
+}
+
+/* "px-3 py-2.5" */
+.tipBody {
+  padding: 10px var(--space-md);
+}
+
+/* "mb-2 text-left font-medium text-chart-tooltip-foreground text-xs" */
+.tipTitle {
+  margin-bottom: var(--space-sm);
+  text-align: left;
+  font-size: var(--size-caption);
+  font-weight: var(--weight-normal);
+  color: var(--chart-tooltip-muted);
+}
+
+/* "space-y-1.5" */
+.tipRows > * + * {
+  margin-top: 6px;
+}
+
+/* "flex items-center justify-between gap-4" */
+.tipRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+/* "flex items-center gap-2" */
+.tipKey {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* "h-2.5 w-2.5 shrink-0 rounded-full" */
+.tipDot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+/* "text-chart-tooltip-muted text-sm" */
+.tipName {
+  font-size: var(--size-body-sm);
+  color: var(--chart-tooltip-muted);
+}
+
+/* "font-medium text-chart-tooltip-foreground text-sm tabular-nums" */
+.tipValue {
+  font-size: var(--size-body-sm);
+  font-weight: var(--weight-normal);
+  font-variant-numeric: tabular-nums;
+  color: var(--chart-tooltip-foreground);
+}
+
+/* "mt-2 transition-opacity duration-200 ease-out" */
+.tipExtra {
+  margin-top: var(--space-sm);
+  transition: opacity 200ms ease-out;
+}
+
+/* ---------- Date ticker (the pill on the floor) ---------- */
+
+/* "overflow-hidden rounded-full bg-zinc-900 px-4 py-1 text-white shadow-lg" */
+.ticker {
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  padding: var(--space-xs) var(--space-lg);
+  background: var(--color-text);
+  color: var(--color-bg-page);
+  box-shadow: var(--elevation-3);
+}
+
+.tickerRow {
+  display: flex;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* "whitespace-nowrap font-medium text-sm" */
+.tickerText {
+  white-space: nowrap;
+  font-size: var(--size-body-sm);
+  font-weight: var(--weight-normal);
+  font-variant-numeric: tabular-nums;
+}
+
+.tickerWindow {
+  position: relative;
+  height: 24px;
+  overflow: hidden;
+}
+
+.tickerSplit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.tickerStack {
+  display: flex;
+  flex-direction: column;
+}
+
+.tickerCell {
+  display: flex;
+  height: 24px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Loading ---------- */
+
+.loadingLabel {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingText {
+  font-size: var(--size-body-sm);
+  letter-spacing: 0.025em;
+  --color: var(--muted-foreground);
+  --shimmering-color: var(--foreground);
+}
+
+.shimmer {
+  display: inline-flex;
+  user-select: none;
+  align-items: center;
+  line-height: 1;
+}
+
+.shimmerVars {
+  --color: var(--muted-foreground);
+  --shimmering-color: var(--foreground);
+}
+
+.shimmerChar {
+  display: inline-block;
+  white-space: pre;
+  line-height: 1;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,116 @@
+/**
+ * The ONLY global stylesheet (§3.5). Reset, body defaults, nothing else.
+ * Everything else is a scoped CSS Module — no `:global` anywhere.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Thin scrollbars everywhere. Both properties inherit, so setting them on the
+   root reaches every scroll container in the app — the sidebar, the sheet body,
+   the palette's results, a Table's capped height — without each stylesheet
+   restating it.
+
+   The standard properties rather than a ::-webkit-scrollbar rebuild on purpose.
+   Asking the platform's own scrollbar to be narrower and quieter keeps
+   everything it already does well: overlay behaviour on macOS, auto-hide,
+   click-the-track-to-page. A hand-built thumb throws all of that away to win a
+   few pixels of styling. Anything that wants no scrollbar at all still says so
+   locally, the way SubTabs does. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* Safari below 18.2 has no scrollbar-width, so it gets the pseudo-element
+   instead. Gated on @supports so the two can't both apply — where the standard
+   property lands, this block never parses. */
+@supports not (scrollbar-width: thin) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--radius-sm);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--size-body);
+  font-weight: var(--weight-base);
+  color: var(--color-text);
+  background: var(--color-bg-page);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}

@@ -1,0 +1,89 @@
+/* TWK Lausanne (local). Imported once, from main.tsx. */
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-50.woff2') format('woff2');
+  font-weight: 50;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-100.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-150.woff2') format('woff2');
+  font-weight: 150;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-200.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-250.woff2') format('woff2');
+  font-weight: 250;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-300.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-350.woff2') format('woff2');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-550.woff2') format('woff2');
+  font-weight: 550;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  src: url('../fonts/twklausanne-650.woff2') format('woff2');
+  font-weight: 650;
+  font-style: normal;
+  font-display: swap;
+}

@@ -1,0 +1,94 @@
+/* A quiet stage for recording: the page ground, the chart centred and large.
+   The DialKit panel floats top-right, over the stage. */
+.stage {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--space-3xl) var(--space-xl);
+  /* Room on the right for the DialKit panel (~280px + its inset), so it sits
+     beside the chart rather than over it. */
+  padding-right: calc(var(--space-xl) + 300px);
+  background: var(--color-bg-subtle);
+}
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  width: min(100%, 1080px);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--size-eyebrow);
+  font-weight: var(--weight-strong);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--size-h2);
+  font-weight: var(--weight-normal);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* The Nuvora card, inlined: page surface, soft ring + L1 depth, 8px corners. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 520px;
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-page);
+  box-shadow: var(--elevation-card);
+}
+
+/* SectionHead's card title at 16px / 350. */
+.cardTitle {
+  font-size: var(--size-card-title-sm);
+  font-weight: var(--weight-normal);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+/* Narrow screens: the panel floats over the stage instead of beside it. */
+@media (max-width: 900px) {
+  .stage {
+    padding-right: var(--space-xl);
+  }
+}
+
+.plot {
+  display: flex;
+  flex: 1;
+  min-height: 380px;
+}
+
+.plot > * {
+  flex: 1;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  font-size: var(--size-caption);
+  color: var(--color-text-muted);
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.line {
+  width: 14px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+}
